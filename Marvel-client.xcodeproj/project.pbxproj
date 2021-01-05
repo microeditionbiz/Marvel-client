@@ -93,6 +93,7 @@
 		6E1EB92225A49C07009F69F2 /* CharacterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterViewController.swift; sourceTree = "<group>"; };
 		6E1EB92725A49C15009F69F2 /* CharacterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterViewModel.swift; sourceTree = "<group>"; };
 		6E1EB93025A49EC7009F69F2 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		6E1EB93825A4AA62009F69F2 /* Marvel-client.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Marvel-client.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +145,7 @@
 		6E1EB87625A3C84C009F69F2 /* Marvel-client */ = {
 			isa = PBXGroup;
 			children = (
+				6E1EB93825A4AA62009F69F2 /* Marvel-client.entitlements */,
 				6E1EB88525A3C84E009F69F2 /* Info.plist */,
 				6E1EB87725A3C84C009F69F2 /* AppDelegate.swift */,
 				6E1EB87925A3C84C009F69F2 /* SceneDelegate.swift */,
@@ -612,6 +614,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Marvel-client/Marvel-client.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5VCBSASHYH;
 				INFOPLIST_FILE = "Marvel-client/Info.plist";
@@ -622,6 +625,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "biz.microedition.Marvel-client";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -632,6 +636,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Marvel-client/Marvel-client.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5VCBSASHYH;
 				INFOPLIST_FILE = "Marvel-client/Info.plist";
@@ -642,6 +647,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "biz.microedition.Marvel-client";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
