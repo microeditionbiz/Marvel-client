@@ -10,6 +10,7 @@ import UIKit
 class CharacterCell: UITableViewCell {
 
     @IBOutlet weak var thumbnailImageView: UIImageView!
+    @IBOutlet weak var nameLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -18,6 +19,7 @@ class CharacterCell: UITableViewCell {
 
     func configure(with viewModel: CharacterViewModel) {
         self.thumbnailImageView.setImageURL(viewModel.thumbnail)
+        self.nameLabel.text = viewModel.name
     }
 
 }

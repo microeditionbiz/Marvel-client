@@ -21,12 +21,15 @@ extension DependencyContainer: CharactersViewModelFactory {
 typealias CharactersFetchCompletion = (Error?) -> Void
 
 protocol CharactersViewModelProtocol {
+    var canLoadMorePublisher: AnyPublisher<Bool, Never> { get }
     var canLoadMore: Bool { get }
-    var charactersPublisher: AnyPublisher<[CharacterViewModel], Never> { get }
 
+    var charactersPublisher: AnyPublisher<[CharacterViewModel], Never> { get }
     func character(at index: Int) -> CharacterViewModel
-    func fetch(name: String?, completion: @escaping CharactersFetchCompletion)
-    func fetchNextPage(completion: @escaping CharactersFetchCompletion)
+
+    func fetch(completion: CharactersFetchCompletion?)
+    func fetch(name: String?, completion: CharactersFetchCompletion?)
+    func fetchNextPage(completion: CharactersFetchCompletion?)
 }
 
 final class CharactersViewModel: CharactersViewModelProtocol {
@@ -41,7 +44,16 @@ final class CharactersViewModel: CharactersViewModelProtocol {
         charactersSubject.eraseToAnyPublisher()
     }
 
-    var canLoadMore: Bool = true
+    private var canLoadMoreSubject = CurrentValueSubject<Bool, Never>(true)
+    var canLoadMorePublisher: AnyPublisher<Bool, Never> {
+        canLoadMoreSubject.eraseToAnyPublisher()
+    }
+
+    var canLoadMore: Bool {
+        canLoadMoreSubject.value
+    }
+
+    private var isUpdating = false
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -53,7 +65,17 @@ final class CharactersViewModel: CharactersViewModelProtocol {
         return self.charactersSubject.value[index]
     }
 
-    func fetch(name: String?, completion: @escaping CharactersFetchCompletion) {
+    func fetch(completion: CharactersFetchCompletion?) {
+        fetch(
+            name: nil,
+            offset: 0,
+            completion: completion
+        )
+    }
+
+    func fetch(name: String?, completion: CharactersFetchCompletion?) {
+        guard name != self.currentName else { return }
+
         fetch(
             name: name,
             offset: 0,
@@ -61,7 +83,7 @@ final class CharactersViewModel: CharactersViewModelProtocol {
         )
     }
 
-    func fetchNextPage(completion: @escaping CharactersFetchCompletion) {
+    func fetchNextPage(completion: CharactersFetchCompletion?) {
         fetch(
             name: currentName,
             offset: ctx.dataManager.nextOffset(from: self.currentOffset),
@@ -69,27 +91,35 @@ final class CharactersViewModel: CharactersViewModelProtocol {
         )
     }
 
-    private func fetch(name: String?, offset: Int, completion: @escaping CharactersFetchCompletion) {
+    private func fetch(name: String?, offset: Int, completion: CharactersFetchCompletion?) {
+        guard !isUpdating else { return }
+        isUpdating = true
+
         ctx.dataManager.fetchCharacters(name: name, offset: offset)
             .sink(
                 receiveCompletion: { [weak self] result in
                     guard let self = self else { return }
                     if case let .failure(error) = result {
-                        completion(error)
+                        completion?(error)
                     } else {
                         self.currentOffset = offset
                         self.currentName = name
-                        completion(nil)
+                        completion?(nil)
                     }
+                    self.isUpdating = false
                 },
-                receiveValue: { [weak self] characters in
-                    self?.charactersSubject.send(characters.map(CharacterViewModel.init))
+                receiveValue: { [weak self] characters, canLoadMore in
+                    guard let self = self else { return }
+                    canLoadMore.do { self.canLoadMoreSubject.send($0) }
+                    self.charactersSubject.send(characters.map(CharacterViewModel.init))
                 }
             )
             .store(in: &cancellables)
     }
     
 }
+
+// MARK -
 
 struct CharacterViewModel {
     let identifier: Int64

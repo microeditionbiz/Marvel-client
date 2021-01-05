@@ -10,8 +10,8 @@ import Combine
 
 protocol DataManager {
     func nextOffset(from offset: Int) -> Int
-    func fetchCharacters(name: String?, offset: Int) -> AnyPublisher<[Character], Error>
-    func fetchComics(characterID: Int64, offset: Int) -> AnyPublisher<[Comic], Error>
+    func fetchCharacters(name: String?, offset: Int) -> AnyPublisher<([Character], Bool?), Error>
+    func fetchComics(characterID: Int64, offset: Int) -> AnyPublisher<([Comic], Bool?), Error>
 }
 
 class DataManagerProvider: DataManager {
@@ -27,11 +27,11 @@ class DataManagerProvider: DataManager {
         offset + Self.pageSize
     }
 
-    func fetchCharacters(name: String?, offset: Int) -> AnyPublisher<[Character], Error> {
-        let subject = PassthroughSubject<[Character], Error>()
+    func fetchCharacters(name: String?, offset: Int) -> AnyPublisher<([Character], Bool?), Error> {
+        let subject = PassthroughSubject<([Character], Bool?), Error>()
 
         localCharacters(name: name, offset: offset) {
-            subject.send($0)
+            subject.send(($0, nil))
         }
 
         let endpoint = MarvelAPI.Characters(
@@ -46,7 +46,7 @@ class DataManagerProvider: DataManager {
                 subject.send(completion: .failure(error))
             case .success:
                 self.localCharacters(name: name, offset: offset) {
-                    subject.send($0)
+                    subject.send(($0, $0.count >= Self.pageSize))
                     subject.send(completion: .finished)
                 }
             }
@@ -58,7 +58,7 @@ class DataManagerProvider: DataManager {
     private func localCharacters(name: String?, offset: Int, completion: @escaping ([Character]) -> Void) {
         let predicate = name?
             .nilIfEmpty
-            .map { NSPredicate(format: "content BEGINSWITH[c] %@", $0) }
+            .map { NSPredicate(format: "name BEGINSWITH[c] %@", $0) }
 
         Character.asyncFetchObjects(
             where: predicate,
@@ -72,8 +72,8 @@ class DataManagerProvider: DataManager {
         )
     }
 
-    func fetchComics(characterID: Int64, offset: Int) -> AnyPublisher<[Comic], Error> {
-        return PassthroughSubject<[Comic], Error>().eraseToAnyPublisher()
+    func fetchComics(characterID: Int64, offset: Int) -> AnyPublisher<([Comic], Bool?), Error> {
+        return PassthroughSubject<([Comic], Bool?), Error>().eraseToAnyPublisher()
     }
 
 }

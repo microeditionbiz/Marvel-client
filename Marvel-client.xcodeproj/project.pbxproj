@@ -46,6 +46,7 @@
 		6E1EB99B25A4D7CC009F69F2 /* CharacterDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E1EB99925A4D7CC009F69F2 /* CharacterDetailsViewController.swift */; };
 		6E1EB99C25A4D7CC009F69F2 /* CharacterDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E1EB99A25A4D7CC009F69F2 /* CharacterDetailsViewModel.swift */; };
 		6E1EB9A125A4DD28009F69F2 /* SignRequestBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E1EB9A025A4DD28009F69F2 /* SignRequestBehavior.swift */; };
+		6E1EB9AC25A4EAD5009F69F2 /* LoadNextPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E1EB9AB25A4EAD5009F69F2 /* LoadNextPageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +115,7 @@
 		6E1EB99925A4D7CC009F69F2 /* CharacterDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterDetailsViewController.swift; sourceTree = "<group>"; };
 		6E1EB99A25A4D7CC009F69F2 /* CharacterDetailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterDetailsViewModel.swift; sourceTree = "<group>"; };
 		6E1EB9A025A4DD28009F69F2 /* SignRequestBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignRequestBehavior.swift; sourceTree = "<group>"; };
+		6E1EB9AB25A4EAD5009F69F2 /* LoadNextPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadNextPageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -246,6 +248,7 @@
 		6E1EB8B625A4836A009F69F2 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				6E1EB9AB25A4EAD5009F69F2 /* LoadNextPageView.swift */,
 				6E1EB96B25A4BB1B009F69F2 /* MessagePresenter.swift */,
 				6E1EB8EC25A4856B009F69F2 /* ViewControllerBuilder.swift */,
 			);
@@ -498,6 +501,7 @@
 				6E1EB91325A49893009F69F2 /* Functional.swift in Sources */,
 				6E1EB99025A4D7BD009F69F2 /* CharactersViewModel.swift in Sources */,
 				6E1EB95F25A4AC80009F69F2 /* ComicResponseMapping.swift in Sources */,
+				6E1EB9AC25A4EAD5009F69F2 /* LoadNextPageView.swift in Sources */,
 				6E1EB87A25A3C84C009F69F2 /* SceneDelegate.swift in Sources */,
 				6E1EB94425A4ABEF009F69F2 /* Model.swift in Sources */,
 				6E1EB8ED25A4856B009F69F2 /* ViewControllerBuilder.swift in Sources */,
