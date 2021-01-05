@@ -20,7 +20,7 @@ protocol DownloadServiceProtocol {
     func downloadContent(fromURL: URL, to localURL: URL, completion: @escaping DownloadServiceCompletion) -> DownloadOperationProtocol
 }
 
-class DowloadService: DownloadServiceProtocol {
+class DownloadService: DownloadServiceProtocol {
     fileprivate let operationQueue: OperationQueue
     
     init() {

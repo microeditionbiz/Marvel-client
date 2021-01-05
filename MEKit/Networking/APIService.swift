@@ -105,6 +105,12 @@ extension APIEndpoint {
     }
 }
 
+// MARK: - API Behaviors
+
+protocol APIRequestBehavior {
+    func before(request: URLRequest) -> URLRequest
+}
+
 // MARK: - API Service
 
 protocol APIServiceProtocol {
@@ -113,15 +119,22 @@ protocol APIServiceProtocol {
 
 class APIService: APIServiceProtocol {
     let baseURL: URL
-    
-    init(baseURL: URL) {
+    let behaviors: [APIRequestBehavior]
+
+    init(baseURL: URL, behaviors: [APIRequestBehavior] = []) {
         self.baseURL = baseURL
+        self.behaviors = behaviors
     }
     
-    @discardableResult func load<E: APIEndpoint>(endpoint: E, completion: @escaping (Result<E.ResultType, Error>)->()) -> APIRequestProtocol {
+    @discardableResult
+    func load<E: APIEndpoint>(endpoint: E, completion: @escaping (Result<E.ResultType, Error>)->()) -> APIRequestProtocol {
         
-        let urlRequest = endpoint.createURLRequest(baseURL: baseURL)
-        
+        var urlRequest = endpoint.createURLRequest(baseURL: baseURL)
+
+        behaviors.forEach {
+            urlRequest = $0.before(request: urlRequest)
+        }
+
         let dataTask = URLSession.shared.dataTask(with: urlRequest) { data, URLResponse, requestError in
             var result: Result<E.ResultType, Error>!
             

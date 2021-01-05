@@ -20,11 +20,12 @@ class AppCoordinator: Coordinator {
 
     func start(animated: Bool) {
         let splitViewController = UISplitViewController()
-        window.rootViewController = splitViewController
-        window.makeKeyAndVisible()
 
         characterersCoordinator = ctx.newCharactersCoordinator(splitViewController: splitViewController)
         characterersCoordinator.start(animated: false)
+
+        window.rootViewController = splitViewController
+        window.makeKeyAndVisible()
     }
 
 }

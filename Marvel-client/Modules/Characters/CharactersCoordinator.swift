@@ -49,8 +49,8 @@ final class CharactersCoordinator: Coordinator {
         return vc
     }
 
-    private func createCharacterVC(with viewModel: CharacterViewModelProtocol?, leftBarButtonItem: UIBarButtonItem? = nil, leftItemsSupplementBackButton: Bool? = nil) -> CharacterViewController {
-        let vc = Storyboards.characters.createViewController(of: CharacterViewController.self)
+    private func createCharacterVC(with viewModel: CharacterDetailsViewModelProtocol?, leftBarButtonItem: UIBarButtonItem? = nil, leftItemsSupplementBackButton: Bool? = nil) -> CharacterDetailsViewController {
+        let vc = Storyboards.characters.createViewController(of: CharacterDetailsViewController.self)
         vc.viewModel = viewModel
         //        vc.delegate = self
 
@@ -73,7 +73,7 @@ final class CharactersCoordinator: Coordinator {
 extension CharactersCoordinator: UISplitViewControllerDelegate {
 
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
-        guard let navController = secondaryViewController as? UINavigationController, let vc = navController.topViewController as? CharacterViewController else {
+        guard let navController = secondaryViewController as? UINavigationController, let vc = navController.topViewController as? CharacterDetailsViewController else {
             return false
         }
         return vc.viewModel == nil

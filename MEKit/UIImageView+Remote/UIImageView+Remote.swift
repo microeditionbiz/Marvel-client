@@ -15,7 +15,7 @@ private struct AssociatedKeys {
 public struct RemoteImageViewConfiguration {
     private init() { }
     static var defaultImage: UIImage?
-    static var downloadService: DownloadServiceProtocol!
+    static var downloadService: DownloadServiceProtocol = DownloadService()
 }
 
 extension UIImageView {

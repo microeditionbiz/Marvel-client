@@ -1,5 +1,5 @@
 //
-//  CharacterViewController.swift
+//  CharacterDetailsViewController.swift
 //  Marvel-client
 //
 //  Created by Pablo Ezequiel Romero Giovannoni on 05/01/2021.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-class CharacterViewController: UIViewController {
+class CharacterDetailsViewController: UIViewController {
 
-    var viewModel: CharacterViewModelProtocol?
+    var viewModel: CharacterDetailsViewModelProtocol?
 
     override func viewDidLoad() {
         super.viewDidLoad()

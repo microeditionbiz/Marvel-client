@@ -1,0 +1,7 @@
+coredata:
+  inputs: Marvel-client/Model/Model.xcdatamodeld
+  outputs:
+    templatePath: CoreData.stencil
+    output: Marvel-client/Model/Model.swift
+    params:
+      generateObjcName: true
