@@ -62,7 +62,7 @@ I haven't used any third party dependency.
 
 I'd like to share the project folder structure to walkthrough the different components:
 
-<img src="Screenshots/files.png" alt="iOS 4" width="400"/>
+<img src="Screenshots/files.png" alt="iOS 4" width="300"/>
 
 + MEKit: here you will find some code created by me that I usually reuse in my personal projects. It resolves common problems in Networking, Core Data, UI and Image download/caching. All the code inside this folder could be an independent Framework (thing I'm planning to do at some point in the future).
 + Marvel-client: specific app code.
