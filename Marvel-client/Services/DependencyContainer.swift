@@ -21,6 +21,10 @@ class DependencyContainer {
         return APIService(baseURL: Self.baseURL, behaviors: [signRequestBehavior])
     }()
 
+    lazy var networkStatus: NetworkStatus = {
+        return NetworkStatusProvider()
+    }()
+
     let coreDataWrapper: CoreDataWrapperProtocol
 
     lazy var dataManager: DataManagerProvider = {
@@ -56,3 +60,9 @@ protocol HasDataManager {
 }
 
 extension DependencyContainer: HasDataManager { }
+
+protocol HasNetworkStatus {
+    var networkStatus: NetworkStatus {get}
+}
+
+extension DependencyContainer: HasNetworkStatus { }

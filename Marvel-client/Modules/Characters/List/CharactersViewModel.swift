@@ -28,7 +28,7 @@ protocol CharactersViewModelProtocol {
     func character(at index: Int) -> CharacterViewModel
 
     func fetch(completion: CharactersFetchCompletion?)
-    func fetch(name: String?, completion: CharactersFetchCompletion?)
+    func fetch(name: String?, forceUpdate: Bool, completion: CharactersFetchCompletion?)
     func fetchNextPage(completion: CharactersFetchCompletion?)
 }
 
@@ -53,7 +53,7 @@ final class CharactersViewModel: CharactersViewModelProtocol {
         canLoadMoreSubject.value
     }
 
-    private var isUpdating = false
+    private var isFetchingNextPage = false
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -73,28 +73,33 @@ final class CharactersViewModel: CharactersViewModelProtocol {
         )
     }
 
-    func fetch(name: String?, completion: CharactersFetchCompletion?) {
-        guard name != self.currentName else { return }
-
-        fetch(
-            name: name,
-            offset: 0,
-            completion: completion
-        )
+    func fetch(name: String?, forceUpdate: Bool, completion: CharactersFetchCompletion?) {
+        if !forceUpdate && name == self.currentName {
+            completion?(nil)
+        } else {
+            fetch(
+                name: name,
+                offset: 0,
+                completion: completion
+            )
+        }
     }
 
     func fetchNextPage(completion: CharactersFetchCompletion?) {
+        guard !isFetchingNextPage else { return }
+        isFetchingNextPage = true
+
         fetch(
             name: currentName,
             offset: ctx.dataManager.nextOffset(from: self.currentOffset),
-            completion: completion
+            completion: { [weak self] error in
+                self?.isFetchingNextPage = false
+                completion?(error)
+            }
         )
     }
 
     private func fetch(name: String?, offset: Int, completion: CharactersFetchCompletion?) {
-        guard !isUpdating else { return }
-        isUpdating = true
-
         ctx.dataManager.fetchCharacters(name: name, offset: offset)
             .sink(
                 receiveCompletion: { [weak self] result in
@@ -106,11 +111,10 @@ final class CharactersViewModel: CharactersViewModelProtocol {
                         self.currentName = name
                         completion?(nil)
                     }
-                    self.isUpdating = false
                 },
                 receiveValue: { [weak self] characters, canLoadMore in
                     guard let self = self else { return }
-                    canLoadMore.do { self.canLoadMoreSubject.send($0) }
+                    self.canLoadMoreSubject.send(canLoadMore)
                     self.charactersSubject.send(characters.map(CharacterViewModel.init))
                 }
             )

@@ -51,9 +51,9 @@ class CharactersViewController: UIViewController, MessagePresenter {
             }
             .store(in: &cancellables)
 
-        viewModel.fetch { error in
+        viewModel.fetch { [weak self] error in
             guard let error = error else { return }
-            self.presentAlert(withError: error)
+            self?.presentAlert(withError: error)
         }
     }
 
@@ -70,6 +70,7 @@ class CharactersViewController: UIViewController, MessagePresenter {
 
     private func configureSearch() {
         let searchController = UISearchController(searchResultsController: nil)
+        searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search Characters"
@@ -89,8 +90,12 @@ class CharactersViewController: UIViewController, MessagePresenter {
 
 
     @objc func refreshControlAction(_ sender: AnyObject) {
-        viewModel.fetch { error in
-            self.tableView.refreshControl?.endRefreshing()
+        viewModel.fetch(
+            name: self.searchController?.searchBar.text?.nilIfEmpty,
+            forceUpdate: true) { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.tableView.refreshControl?.endRefreshing()
+            }
         }
     }
 
@@ -173,15 +178,17 @@ extension CharactersViewController: UISearchResultsUpdating {
 
         // Wrap our request in a work item
         let requestWorkItem = DispatchWorkItem { [weak self] in
-            self?.viewModel.fetch(name: searchController.searchBar.text) { error in
+            self?.viewModel.fetch(
+                name: searchController.searchBar.text?.nilIfEmpty,
+                forceUpdate: false) { error in
                 guard let error = error else { return }
                 self?.presentAlert(withError: error)
             }
         }
 
-        // Save the new work item and execute it after 250 ms
+        // Save the new work item and execute it after 500 ms
         pendingRequestWorkItem = requestWorkItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(250),
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500),
                                       execute: requestWorkItem)
     }
 
