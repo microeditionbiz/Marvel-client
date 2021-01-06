@@ -60,7 +60,7 @@ extension UIImageView {
                 self.presentErrorMode()
             } else {
                 if let currentUrl = self.imageURL, currentUrl == url {
-                    print("downloaded \(url) to \(localUrl)")
+//                    print("downloaded \(url) to \(localUrl)")
                     self.image = self.cachedImage(for: url)
                 }
             }

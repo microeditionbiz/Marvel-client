@@ -71,22 +71,7 @@ internal class Comic: NSManagedObject {
     }
 
     @NSManaged internal var details: String?
-    internal var identifier: Int64? {
-        get {
-            let key = "identifier"
-            willAccessValue(forKey: key)
-            defer { didAccessValue(forKey: key) }
-
-            return primitiveValue(forKey: key) as? Int64
-        }
-        set {
-            let key = "identifier"
-            willChangeValue(forKey: key)
-            defer { didChangeValue(forKey: key) }
-
-        setPrimitiveValue(newValue, forKey: key)
-        }
-    }
+    @NSManaged internal var identifier: Int64
     @NSManaged internal var image: URL?
     @NSManaged internal var thumbnail: URL?
     @NSManaged internal var title: String?

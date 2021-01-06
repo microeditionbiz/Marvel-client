@@ -8,6 +8,6 @@
 
 import Foundation
 
-protocol Coordinator: Owned {
+protocol Coordinator {
     func start(animated: Bool)
 }

@@ -114,8 +114,8 @@ final class CharactersViewModel: CharactersViewModelProtocol {
                 },
                 receiveValue: { [weak self] characters, canLoadMore in
                     guard let self = self else { return }
-                    self.canLoadMoreSubject.send(canLoadMore)
-                    self.charactersSubject.send(characters.map(CharacterViewModel.init))
+                    canLoadMore.do { self.canLoadMoreSubject.send($0) }
+                    characters.do { self.charactersSubject.send($0.map(CharacterViewModel.init)) }
                 }
             )
             .store(in: &cancellables)

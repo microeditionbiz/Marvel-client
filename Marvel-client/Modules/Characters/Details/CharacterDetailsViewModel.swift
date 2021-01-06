@@ -8,25 +8,29 @@
 import Foundation
 
 protocol CharacterDetailsViewModelFactory {
-    func newCharacterDetailsViewModel(character: Character) -> CharacterDetailsViewModelProtocol
+    func newCharacterDetailsViewModel(character: CharacterViewModel) -> CharacterDetailsViewModelProtocol
 }
 
 extension DependencyContainer: CharacterDetailsViewModelFactory {
-    func newCharacterDetailsViewModel(character: Character) -> CharacterDetailsViewModelProtocol {
-        return CharacterDetailsViewModel(context: self, character: character)
+    func newCharacterDetailsViewModel(character: CharacterViewModel) -> CharacterDetailsViewModelProtocol {
+        let comicsViewModel = self.newComicsViewModel(characterId: character.identifier)
+        return CharacterDetailsViewModel(character: character, comics: comicsViewModel)
     }
 }
 
-protocol CharacterDetailsViewModelProtocol {
+typealias CharactersDetailsFetchCompletion = (Error?) -> Void
 
+protocol CharacterDetailsViewModelProtocol {
+    var baseDetails: CharacterViewModel { get }
+    var comicsViewModel: ComicsViewModelProtocol { get }
 }
 
 class CharacterDetailsViewModel: CharacterDetailsViewModelProtocol {
-    typealias Context = HasAPIService
-    private let ctx: Context
+    let baseDetails: CharacterViewModel
+    let comicsViewModel: ComicsViewModelProtocol
 
-    init(context: Context, character: Character) {
-        self.ctx = context
+    init(character: CharacterViewModel, comics: ComicsViewModelProtocol) {
+        self.baseDetails = character
+        self.comicsViewModel = comics
     }
-
 }

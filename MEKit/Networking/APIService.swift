@@ -46,7 +46,7 @@ class APIRequest: APIRequestProtocol {
 // MARK: - API Response
 
 protocol APIResponseBase {
-    init(_ data: Data) throws
+    init(urlRequest: URLRequest, dataResponse: Data) throws
 }
 
 // MARK: - API Endpoint
@@ -143,7 +143,10 @@ class APIService: APIServiceProtocol {
             } else {
                 if let data = data {
                     do {
-                        let response = try E.ResultType.init(data)
+                        let response = try E.ResultType.init(
+                            urlRequest: urlRequest,
+                            dataResponse: data
+                        )
                         result = .success(response)
                     } catch {
                         result = .failure(error)

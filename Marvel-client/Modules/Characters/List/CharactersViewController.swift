@@ -117,8 +117,6 @@ class CharactersListDataSource: UITableViewDiffableDataSource<CharactersListData
             cell.configure(with: characterViewModel)
             return cell
         }
-
-        defaultRowAnimation = .fade
     }
 
     func apply(characters: [CharacterViewModel]) {
@@ -188,8 +186,10 @@ extension CharactersViewController: UISearchResultsUpdating {
 
         // Save the new work item and execute it after 500 ms
         pendingRequestWorkItem = requestWorkItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500),
-                                      execute: requestWorkItem)
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + .milliseconds(500),
+            execute: requestWorkItem
+        )
     }
 
 }

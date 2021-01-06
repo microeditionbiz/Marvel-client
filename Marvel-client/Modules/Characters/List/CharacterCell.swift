@@ -22,4 +22,10 @@ class CharacterCell: UITableViewCell {
         self.nameLabel.text = viewModel.name
     }
 
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        self.nameLabel.font = .systemFont(ofSize: 24, weight: selected ? .heavy : .regular)
+        
+    }
+
 }

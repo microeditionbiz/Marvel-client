@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 protocol CharactersCoordinatorFactory {
     func newCharactersCoordinator(splitViewController: UISplitViewController) -> CharactersCoordinator
@@ -18,9 +19,10 @@ extension DependencyContainer: CharactersCoordinatorFactory {
 }
 
 final class CharactersCoordinator: Coordinator {
-    typealias Context = CharactersViewModelFactory
+    typealias Context = CharactersViewModelFactory & CharacterDetailsViewModelFactory
     let ctx: Context
     unowned let splitViewController: UISplitViewController
+    private var cancellables = Set<AnyCancellable>()
 
     init(context: Context, splitViewController: UISplitViewController) {
         self.ctx = context
@@ -35,33 +37,42 @@ final class CharactersCoordinator: Coordinator {
         self.splitViewController.delegate = self
 
         self.splitViewController.viewControllers = [
-            creataeCharactersVC(),
-            createCharacterVC(with: nil, leftBarButtonItem: splitViewController.displayModeButtonItem, leftItemsSupplementBackButton: true)
-            ].map(UINavigationController.init)
+            creataCharactersVC(),
+            createCharacterNotSelectedVC()
+        ]
+        .map(UINavigationController.init)
 
         self.splitViewController.preferredDisplayMode = .allVisible
     }
 
-    private func creataeCharactersVC() -> CharactersViewController {
+    func showCharacterDetails(characterViewModel: CharacterViewModel) {
+        let vc = createCharacterVC(with: characterViewModel)
+        splitViewController.showDetailViewController(UINavigationController(rootViewController: vc), sender: self)
+    }
+
+    private func creataCharactersVC() -> CharactersViewController {
         let vc = Storyboards.characters.createViewController(of: CharactersViewController.self)
         vc.viewModel = ctx.newCharactersViewModel()
-//        vc.delegate
+        vc.selectCharacterPublisher
+            .sink { [weak self] characterViewModel in
+                self?.showCharacterDetails(characterViewModel: characterViewModel)
+            }
+            .store(in: &cancellables)
         return vc
     }
 
-    private func createCharacterVC(with viewModel: CharacterDetailsViewModelProtocol?, leftBarButtonItem: UIBarButtonItem? = nil, leftItemsSupplementBackButton: Bool? = nil) -> CharacterDetailsViewController {
+    private func createCharacterVC(with viewModel: CharacterViewModel) -> CharacterDetailsViewController {
         let vc = Storyboards.characters.createViewController(of: CharacterDetailsViewController.self)
-        vc.viewModel = viewModel
-        //        vc.delegate = self
+        vc.viewModel = ctx.newCharacterDetailsViewModel(character: viewModel)
+        vc.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem
+        vc.navigationItem.leftItemsSupplementBackButton = true
+        return vc
+    }
 
-        if let leftBarButtonItem = leftBarButtonItem {
-            vc.navigationItem.leftBarButtonItem = leftBarButtonItem
-        }
-
-        if let leftItemsSupplementBackButton = leftItemsSupplementBackButton {
-            vc.navigationItem.leftItemsSupplementBackButton = leftItemsSupplementBackButton
-        }
-
+    private func createCharacterNotSelectedVC() -> CharacterNotSelectedViewController {
+        let vc = Storyboards.characters.createViewController(of: CharacterNotSelectedViewController.self)
+        vc.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem
+        vc.navigationItem.leftItemsSupplementBackButton = true
         return vc
     }
 
@@ -73,10 +84,10 @@ final class CharactersCoordinator: Coordinator {
 extension CharactersCoordinator: UISplitViewControllerDelegate {
 
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
-        guard let navController = secondaryViewController as? UINavigationController, let vc = navController.topViewController as? CharacterDetailsViewController else {
+        guard let navController = secondaryViewController as? UINavigationController, let _ = navController.topViewController as? CharacterNotSelectedViewController else {
             return false
         }
-        return vc.viewModel == nil
+        return true
     }
 
 }
